@@ -1,73 +1,71 @@
-# React + TypeScript + Vite
+# Frontend Prueba Tecnica - Red Social
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend en React + TypeScript para consumir el backend local en `http://localhost:8080`.
 
-Currently, two official plugins are available:
+## Stack
+- React 19 + TypeScript estricto
+- Vite
+- Zustand
+- Fetch API con cliente centralizado
+- STOMP + SockJS para likes en tiempo real
+- Vitest
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Estructura
+```text
+src/
+  api/
+  app/
+  components/
+  features/
+    login/
+    feed/
+    profile/
+  lib/
+  store/
+  types/
+  ws/
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Variables de entorno
+Crea `.env` tomando `.env.example`:
+```bash
+VITE_API_BASE_URL=http://localhost:8080
+VITE_WS_URL=http://localhost:8080/ws
 ```
+
+## Ejecutar local
+```bash
+npm install
+npm run dev
+```
+
+Rutas:
+- `/login`
+- `/feed` (protegida)
+- `/profile` (protegida)
+
+## Build y tests
+```bash
+npm run build
+npm run test
+```
+
+## Docker
+```bash
+docker build -t redsocial-frontend .
+docker run --rm -p 8081:80 redsocial-frontend
+```
+
+## Notas de errores
+- `POST /api/auth/login` responde `400` en credenciales invalidas.
+- `GET /api/users/me` puede responder `400` si no encuentra usuario.
+- `401/403` fuerzan logout y redireccion a `/login`.
+- Se envia `X-Correlation-Id` en todas las requests.
+- Se adjunta `Authorization: Bearer <token>` en endpoints protegidos.
+
+## Realtime likes
+- Handshake WS: `VITE_WS_URL` (default `http://localhost:8080/ws`).
+- Headers `CONNECT`: `Authorization` y `X-Correlation-Id`.
+- Topic por post: `/topic/posts/{postId}/likes`.
+- Toggle WS: `/app/likes/toggle`.
+- Fallback HTTP: `POST /api/likes/toggle` si WS no conecta.
