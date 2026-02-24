@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ErrorBanner } from '../../components/ErrorBanner'
 import { useAuthStore } from '../../store/authStore'
 
@@ -33,6 +33,9 @@ export const LoginPage = () => {
           <label className="stack"><span>Password</span><input name="password" type="password" required /></label>
           <button type="submit" disabled={loading}>{loading ? 'Ingresando...' : 'Ingresar'}</button>
         </form>
+        <p className="muted">
+          ¿No tienes cuenta? <Link to="/register">Registrate</Link>
+        </p>
       </section>
       <ErrorBanner message={errorMessage} />
     </main>

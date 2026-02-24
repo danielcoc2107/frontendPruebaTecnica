@@ -6,6 +6,7 @@ import { ProtectedRoute } from '../components/ProtectedRoute'
 import { FeedPage } from '../features/feed/FeedPage'
 import { LoginPage } from '../features/login/LoginPage'
 import { ProfilePage } from '../features/profile/ProfilePage'
+import { RegisterPage } from '../features/register/RegisterPage'
 import { useAuthStore } from '../store/authStore'
 
 const UnauthorizedBridge = (): null => {
@@ -23,6 +24,7 @@ export const AppRouter = () => {
       <AppHeader />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/feed" element={<FeedPage />} />
           <Route path="/profile" element={<ProfilePage />} />
