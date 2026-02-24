@@ -60,7 +60,7 @@ export const FeedPage = () => {
           </label>
           <div className="row">
             <button type="submit" disabled={creating || message.trim().length === 0}>{creating ? 'Guardando...' : 'Crear'}</button>
-            <p className="muted">La fecha de publicacion la define el backend.</p>
+            <p className="muted">o:</p>
           </div>
         </form>
       </section>
